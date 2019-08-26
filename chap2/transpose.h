@@ -11,4 +11,6 @@ typedef struct
     int value;
 } term;
 
+void fastTranspose(term a[], term b[]);
+
 #endif
