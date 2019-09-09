@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.mak": "makefile",
+        "*.inf": "ini",
+        "*.dec": "makefile",
+        "*.dsc": "makefile",
+        "*.fdf": "makefile",
+        "*.uni": "cpp",
+        "*.env": "makefile",
+        "stdio.h": "c"
+    }
+}
