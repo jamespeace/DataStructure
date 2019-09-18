@@ -40,6 +40,7 @@ void mmult(term a[], term b[], term d[])
     a[totalA + 1].row = rowsA;
     newB[totalB + 1].row = colsB;
     newB[totalB + 1].col = 0;
+    newB[totalB + 1].value = totalB;
     for (i = 1; i <= totalA;)
     {
         column = newB[1].row;
@@ -61,7 +62,7 @@ void mmult(term a[], term b[], term d[])
                     i++;
                     break;
                 case 0:
-                    sum += (a[i++].value * newB[j].value);
+                    sum += (a[i++].value * newB[j++].value);
                     break;
                 case 1:
                     j++;
