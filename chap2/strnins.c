@@ -21,13 +21,3 @@ void strnins(char *s, char *t, int i)
         strncpy(s+i, t, len_des);
     }
 }
-
-int main(int argc, char const *argv[])
-{
-    char s[MAX_SIZE] = "hhh";
-    char c[MAX_SIZE] = "ddd";
-
-    strnins(s, c, 0);
-    printf("s = %s\n", s);
-    return 0;
-}
