@@ -11,5 +11,5 @@ void queueFull();
 element queueEmpty();
 void addq(element);
 element deleteq();
-
+void copy(void *, void *, void *);
 #endif
