@@ -4,19 +4,14 @@
 
 void push(element item)
 {
-    if (isFull())
-        return stackFull();
+    if (top >= MAX_STACK_SIZE - 1)
+        stackFull();
     stack[++top] = item;
 }
 
 element pop()
 {
-    if (isEmpty())
-        return stackEmpty();
-    return stack[top--];
-}
-
-void stackFull()
+    if (top == -1)
 {
     fprintf(stderr, "stack is full.\n");
     exit(EXIT_FAILURE);
@@ -28,24 +23,8 @@ element stackEmpty()
     exit(EXIT_FAILURE);
 }
 
-bool isFull()
+void stackFull()
 {
-    if (top == (MAX_STACK_SIZE - 1))
-        return true;
-    else
-        return false;
-}
-
-bool isEmpty()
-{
-    if (top == -1)
-        return true;
-    else
-        return false;
-}
-
-int main(int argc, char const *argv[])
-{
-    pop();
-    return 0;
+    fprintf(stderr, "stack is full.\n");
+    exit(EXIT_FAILURE);
 }

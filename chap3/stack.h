@@ -1,23 +1,20 @@
 #ifndef _STACK_H_
 #define _STACK_H_
 
-#include <stdbool.h>
-
-#define MAX_STACK_SIZE 100
+#define MAX_STACK_SIZE 1000
 
 typedef struct {
-    int key;
+    short int col;
+    short int row;
+    short int dir;
 } element;
-
 element stack[MAX_STACK_SIZE];
-int top = -1;
+extern int top;
 
-element *createS(int size);
-bool isFull();
+
 void push(element item);
-element pop();
-bool isEmpty();
-void stackFull();
+element pop(void);
 element stackEmpty();
+void stackFull();
 
 #endif
