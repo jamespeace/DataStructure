@@ -15,3 +15,5 @@ temp
 template
 *.cpp
 .vscode
+path
+skipsearch
