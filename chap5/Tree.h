@@ -1,6 +1,7 @@
 #ifndef _TREE_H_
 #define _TREE_H_
 
+#include "../chap3/cpp/Stack/Stack.h"
 template <class T>
 class Tree; // forward declaration.
 
@@ -25,6 +26,16 @@ private:
     void Visit(TreeNode<T> *);
     void NonrecInorder();
     TreeNode<T> *root;
+};
+
+template <class T>
+class InorderIterator {
+public:
+    InorderIterator() {currentNode = root;}
+    T* Next();
+private:
+    Stack<TreeNode<T>*> s;
+    TreeNode<T> *currentNode;
 };
 
 #endif
