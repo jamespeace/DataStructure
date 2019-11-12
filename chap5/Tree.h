@@ -23,6 +23,7 @@ public:
 private:
     void Inorder(TreeNode<T> *root);
     void Visit(TreeNode<T> *);
+    void NonrecInorder();
     TreeNode<T> *root;
 };
 
