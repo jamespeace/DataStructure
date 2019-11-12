@@ -18,8 +18,11 @@ template <class T>
 class Tree {
 public:
     //  Tree operations.
+    void Inorder();
 
 private:
+    void Inorder(TreeNode<T> *root);
+    void Visit(TreeNode<T> *);
     TreeNode<T> *root;
 };
 
