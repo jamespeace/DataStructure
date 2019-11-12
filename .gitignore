@@ -13,7 +13,6 @@ queue
 stack
 temp
 template
-*.cpp
 .vscode
 path
 skipsearch
