@@ -19,7 +19,15 @@ class Tree {
 public:
     // Tree operations.
 private:
+    void NonrecInorder();
+    void LevelOrder();
     TreeNode<T> *root;
+};
+
+template <class T>
+class InorderIterator {
+private:
+    T *Next();
 };
 
 #endif
