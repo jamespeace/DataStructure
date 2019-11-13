@@ -1,5 +1,6 @@
 #include "Tree.h"
 #include "../chap3/cpp/Stack/Stack.cpp"
+#include "../chap3/cpp/Queue/Queue.cpp"
 
 template <class T>
 void Tree<T>::NonrecInorder()
@@ -27,6 +28,19 @@ void Tree<T>::LevelOrder()
 {
     // Traverse the binary tree in level order.
     Queue<TreeNode<T>*> q;
+    TreeNode<T> *currentNode = root;
+    while (currentNode)
+    {
+        Visit(currentNode);
+        if (currentNode->leftChild)
+            q.Push(currentNode->leftChild);
+        if (currentNode->rightChild)
+            q.Push(currentNode->rightChild);
+        if (q.IsEmpty())
+            return;
+        currentNode = q.Front();
+        q.Pop();
+    }
 }
 
 template <class T>
