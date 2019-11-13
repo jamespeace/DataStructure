@@ -22,9 +22,11 @@ public:
     void Inorder();
 
 private:
+    // Tree operations.
     void Inorder(TreeNode<T> *root);
     void Visit(TreeNode<T> *);
     void NonrecInorder();
+    void LevelOrder();
     TreeNode<T> *root;
 };
 
