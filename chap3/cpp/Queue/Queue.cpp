@@ -11,7 +11,7 @@ Queue<T>::Queue(int queueCapacity):capacity(queueCapacity)
 template <class T>
 inline bool Queue<T>::IsEmpty() const
 {
-    return front = rear;
+    return front == rear;
 }
 
 template <class T>
