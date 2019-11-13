@@ -21,13 +21,13 @@ class Tree {
 public:
     //  Tree operations.
     void Inorder();
+    void LevelOrder();
 
 private:
     // Tree operations.
     void Inorder(TreeNode<T> *root);
     void Visit(TreeNode<T> *);
     void NonrecInorder();
-    void LevelOrder();
     TreeNode<T> *root;
 };
 
