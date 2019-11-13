@@ -9,6 +9,7 @@ template <class T>
 class TreeNode {
     friend class Tree;
 public:
+    TreeNode(T data = 0, TreeNode<T> *leftChild = 0, TreeNode<T> *rightChild = 0);
 private:
     T data;
     TreeNode<T> *leftChild;

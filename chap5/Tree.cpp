@@ -59,3 +59,7 @@ T* InorderIterator<T>::Next()
     currentNode = currentNode->rightChild;
     return &temp;
 }
+
+template <class T>
+TreeNode<T>::TreeNode(T d, TreeNode<T>* left, TreeNode<T>* right):data(d):leftChild(left):rightChild(right)
+{}
