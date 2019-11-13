@@ -1,4 +1,6 @@
 #include "Stack.h"
+#include <algorithm>
+using namespace std;
 
 template <class T>
 Stack<T>::Stack(int stackCapacity): capacity(stackCapacity)
