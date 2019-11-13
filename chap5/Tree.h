@@ -22,6 +22,7 @@ public:
     //  Tree operations.
     void Inorder();
     void LevelOrder();
+    void SetRoot(TreeNode<T> *r):root(r);
 
 private:
     // Tree operations.
