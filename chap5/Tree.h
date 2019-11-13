@@ -28,12 +28,16 @@ public:
         TreeNode<T> *currentNode;
     };
     //  Tree operations.
+    void Preorder();
+    void Postorder();
     void Inorder();
     void LevelOrder();
     void SetRoot(TreeNode<T> *r) {root = r;}
 
 private:
     // Tree operations.
+    void Preorder(TreeNode<T> *currentNode);
+    void Postorder(TreeNode<T> *currentNode);
     void Inorder(TreeNode<T> *root);
     void Visit(TreeNode<T> *);
     void NonrecInorder();

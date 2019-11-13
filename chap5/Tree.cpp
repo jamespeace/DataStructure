@@ -5,6 +5,38 @@
 using namespace std;
 
 template <class T>
+void Tree<T>::Preorder()
+{
+    Preorder(root);
+}
+
+template <class T>
+void Tree<T>::Postorder()
+{
+    Postorder(root);
+}
+
+template <class T>
+void Tree<T>::Preorder(TreeNode<T> *currentNode)
+{
+    if (currentNode) {
+        Visit(currentNode);
+        Preorder(currentNode->leftChild);
+        Preorder(currentNode->rightChild);
+    }
+}
+
+template <class T>
+void Tree<T>::Postorder(TreeNode<T> *currentNode)
+{
+    if (currentNode) {
+        Preorder(currentNode->leftChild);
+        Preorder(currentNode->rightChild);
+        Visit(currentNode);
+    }
+}
+
+template <class T>
 void Tree<T>::NonrecInorder()
 {
     // Nonrecursive inorder traversal using a stack.
