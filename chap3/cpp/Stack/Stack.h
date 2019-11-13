@@ -1,3 +1,5 @@
+#ifndef _STACK_H_
+#define _STACK_H_
 template <class T>
 class Stack {
 public:
@@ -21,3 +23,4 @@ private:
     int capacity;
 };
 
+#endif
