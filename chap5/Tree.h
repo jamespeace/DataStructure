@@ -7,7 +7,7 @@ class Tree; // forward declaration.
 
 template <class T>
 class TreeNode {
-    friend class Tree;
+    friend class Tree<T>;
 public:
     TreeNode(T data = 0, TreeNode<T> *leftChild = 0, TreeNode<T> *rightChild = 0);
 private:
@@ -19,10 +19,18 @@ private:
 template <class T>
 class Tree {
 public:
+    class InorderIterator {
+    public:
+        InorderIterator() {currentNode = root;}
+        T* Next();
+    private:
+        Stack<TreeNode<T>*> s;
+        TreeNode<T> *currentNode;
+    };
     //  Tree operations.
     void Inorder();
     void LevelOrder();
-    void SetRoot(TreeNode<T> *r):root(r);
+    void SetRoot(TreeNode<T> *r) {root = r;}
 
 private:
     // Tree operations.
@@ -32,14 +40,5 @@ private:
     TreeNode<T> *root;
 };
 
-template <class T>
-class InorderIterator {
-public:
-    InorderIterator() {currentNode = root;}
-    T* Next();
-private:
-    Stack<TreeNode<T>*> s;
-    TreeNode<T> *currentNode;
-};
 
 #endif

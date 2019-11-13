@@ -1,6 +1,8 @@
 #include "Tree.h"
 #include "../chap3/cpp/Stack/Stack.cpp"
 #include "../chap3/cpp/Queue/Queue.cpp"
+#include <iostream>
+using namespace std;
 
 template <class T>
 void Tree<T>::NonrecInorder()
@@ -44,7 +46,7 @@ void Tree<T>::LevelOrder()
 }
 
 template <class T>
-T* InorderIterator<T>::Next()
+T* Tree<T>::InorderIterator::Next()
 {
     while (currentNode)
     {
@@ -61,5 +63,9 @@ T* InorderIterator<T>::Next()
 }
 
 template <class T>
-TreeNode<T>::TreeNode(T d, TreeNode<T>* left, TreeNode<T>* right):data(d):leftChild(left):rightChild(right)
+TreeNode<T>::TreeNode(T d, TreeNode<T>* left, TreeNode<T>* right):data(d),leftChild(left),rightChild(right)
 {}
+
+template <class T>
+void Tree<T>::Visit(TreeNode<T> *currentNode)
+{cout << currentNode->data << endl;}
