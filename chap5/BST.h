@@ -14,7 +14,7 @@ public:
     pair<K, E> *Get(const K &k) const;
     pair<K, E> *RankGet(int r);
     bool IsEmpty() const { return root == nullptr;}
-    void Insert(const pair<K, E> &p){}
+    void Insert(const pair<K, E> &p);
     void Delete(const K &p){}
 
 private:

@@ -43,3 +43,34 @@ pair<K, E> *BST<K, E>::RankGet(int r)
     }
     return 0;
 }
+
+template <class K, class E>
+void BST<K, E>::Insert(const pair<K, E> &thePair)
+{
+    // Insert thePair into the binary search tree
+    // Search for thePair.first, pp is parent of p
+    TreeNode<pair<K, E>> *p = root, *pp = 0;
+    while(p) {
+        pp = p;
+        if (thePair.first < p->data.first)
+            p = p->leftChild;
+        else if (thePair.first > p->data.first)
+            p = p->rightChild;
+        else {
+            // duplicate, update associated element
+            p->data.second = thePair.second;
+            return;
+        }
+    }
+    // perform insertion
+    p = new TreeNode<pair<K, E>>(thePair);
+    if (root) {
+        // root not empty
+        if (thePair.first < pp->data.first)
+            pp->leftChild = p;
+        else
+            pp->rightChild = p;
+    }
+    else
+        root = p; 
+}
