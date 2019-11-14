@@ -20,6 +20,7 @@ private:
     T data;
     TreeNode<T> *leftChild;
     TreeNode<T> *rightChild;
+    int leftSize;
 };
 
 template <class T>
