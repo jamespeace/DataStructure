@@ -5,11 +5,17 @@
 template <class T>
 class Tree; // forward declaration.
 
+template <class K, class E>
+class BST;
+
 template <class T>
 class TreeNode {
     friend class Tree<T>;
+    template <class K, class E>
+    friend class BST;
+
 public:
-    TreeNode(T data = 0, TreeNode<T> *leftChild = 0, TreeNode<T> *rightChild = 0);
+    TreeNode(T t = 0, TreeNode<T> *left = 0, TreeNode<T> *right = 0);
 private:
     T data;
     TreeNode<T> *leftChild;
@@ -28,6 +34,7 @@ public:
         TreeNode<T> *currentNode;
     };
     //  Tree operations.
+    Tree(TreeNode<T> *r = 0);
     void Preorder();
     void Postorder();
     void Inorder();
@@ -43,6 +50,5 @@ private:
     void NonrecInorder();
     TreeNode<T> *root;
 };
-
 
 #endif
