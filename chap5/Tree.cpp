@@ -101,3 +101,7 @@ TreeNode<T>::TreeNode(T d, TreeNode<T>* left, TreeNode<T>* right):data(d),leftCh
 template <class T>
 void Tree<T>::Visit(TreeNode<T> *currentNode)
 {cout << currentNode->data << endl;}
+
+template <class T>
+Tree<T>::Tree(TreeNode<T> *r) : root(r)
+{}
