@@ -8,6 +8,7 @@ public:
     void Push(const T& e);
     void Pop();
     bool IsEmpty() {return heapSize == 0;}
+    void PrintHeap();
 private:
     T *heap;
     int heapSize;

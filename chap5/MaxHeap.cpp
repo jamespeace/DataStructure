@@ -1,4 +1,7 @@
 #include "MaxHeap.h"
+#include <iostream>
+#include <algorithm>
+using namespace std;
 
 template <class T>
 void ChangeSize1D(T*& a, const int oldSize, const int newSize)
@@ -13,7 +16,7 @@ void ChangeSize1D(T*& a, const int oldSize, const int newSize)
 }
 
 template <class T>
-MaxHeap<T>::MaxHeap(int theCapacity = 10)
+MaxHeap<T>::MaxHeap(int theCapacity)
 {
     if (theCapacity < 1) throw "Capacity must be >= 1";
     capacity = theCapacity;
@@ -43,7 +46,7 @@ void MaxHeap<T>::Pop()
 {
     // Delete max element.
     if (IsEmpty()) throw "Heap is empty. Cannot delete.";
-    heap[1].~T()    // delete max element.
+    heap[1].~T();   // delete max element.
 
     // remove last element from heap
     T lastE = heap[heapSize] - 1;
@@ -66,4 +69,14 @@ void MaxHeap<T>::Pop()
         child *= 2;
     }
     heap[currentNode] = lastE;
+}
+
+template <class T>
+void MaxHeap<T>::PrintHeap()
+{
+    cout << "heap: ";
+    for (int i = 1; i <= heapSize; i++) {
+        cout << heap[i] << ", ";
+    }
+    cout << "NULL" << endl;
 }
