@@ -11,6 +11,11 @@ pair<K, E> *BST<K, E>::Get(const K &k) const
     return Get(root, k);
 }
 
+template <class K, class E>
+void BST<K, E>::Inorder() const
+{
+    Inorder(root);
+}
 //
 // Workhorse
 //
@@ -73,4 +78,78 @@ void BST<K, E>::Insert(const pair<K, E> &thePair)
     }
     else
         root = p; 
+}
+
+template <class K, class E>
+void BST<K, E>::Delete(const K &k)
+{
+    TreeNode<pair<K, E>> *deleteNode = root;
+    TreeNode<pair<K, E>> **delParent = &root;
+    // Search the key
+    while (deleteNode) {
+        if (k < deleteNode->data.first) {
+            delParent = &deleteNode->leftChild;
+            deleteNode = deleteNode->leftChild;
+        }
+        else if(k > deleteNode->data.first) {
+            delParent = &deleteNode->rightChild;
+            deleteNode = deleteNode->rightChild;
+        }
+        // node is found
+        if (deleteNode->leftChild && deleteNode->rightChild) {
+            // Node has 2 children. Use left most child to replace its position.
+            TreeNode<pair<K, E>> *pp, *leftmostNode, *p = deleteNode->leftChild;
+            while (p->rightChild) {
+                pp = p;
+                p = p->rightChild;
+            }
+            leftmostNode = p;
+            // Right most node is the root of left sub binary search tree
+            if (leftmostNode == deleteNode->leftChild) {
+                leftmostNode->rightChild = deleteNode->rightChild;
+            } else {
+                pp->rightChild = leftmostNode->leftChild;
+                leftmostNode->leftChild = deleteNode->leftChild;
+                leftmostNode->rightChild = deleteNode->rightChild;
+            }
+                *delParent = leftmostNode;
+        } else {
+            // node has 1 or 0 child.
+                *delParent = deleteNode->leftChild ? deleteNode->leftChild : deleteNode->rightChild;
+        }
+        // delete node
+        deleteNode->~TreeNode<pair<K, E>>();
+        return;
+    }
+    throw "Cannot delete node. Node not found.";
+}
+
+template <class K, class E>
+void BST<K, E>::Inorder(TreeNode<pair<K, E>>*r) const
+{
+    if (r) {
+        Inorder(r->leftChild);
+        Visit(r);
+        Inorder(r->rightChild);
+    }
+}
+
+template <class K, class E>
+void BST<K, E>::Visit(TreeNode<pair<K, E>>*r) const
+{
+    cout  << r->data.first << ", ";
+}
+
+template <class K, class E>
+int BST<K, E>::Height() const
+{
+    return Height(root);
+}
+
+template <class K, class E>
+int BST<K, E>::Height(TreeNode<pair<K, E>> *p) const
+{
+    if (p == nullptr)
+        return 0;
+    return 1 + max(Height(p->leftChild), Height(p->rightChild));
 }
