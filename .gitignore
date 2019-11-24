@@ -21,4 +21,6 @@ postfix
 tmp
 chain
 Matrix
-test/
+test
+rMergeSort
+a.out
