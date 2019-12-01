@@ -2,10 +2,14 @@
 #define _CHAINNODE_H_
 
 template <class T> class Chain; // forward declaration
+template <class K, class E>
+class Chaining;
 
 template <class T>
 class ChainNode {
     friend class Chain<T>;
+    template <class K, class E>
+    friend class Chaining;
 public:
     ChainNode(T element = 0, ChainNode<T>* next = nullptr)
     // 0 is the default value for element and next
