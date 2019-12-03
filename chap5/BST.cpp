@@ -15,6 +15,7 @@ template <class K, class E>
 void BST<K, E>::Inorder() const
 {
     Inorder(root);
+    cout << "NULL" << endl;
 }
 //
 // Workhorse
@@ -86,42 +87,46 @@ void BST<K, E>::Delete(const K &k)
     TreeNode<pair<K, E>> *deleteNode = root;
     TreeNode<pair<K, E>> **delParent = &root;
     // Search the key
-    while (deleteNode) {
+    while (deleteNode)
         if (k < deleteNode->data.first) {
             delParent = &deleteNode->leftChild;
             deleteNode = deleteNode->leftChild;
         }
-        else if(k > deleteNode->data.first) {
+        else if (k > deleteNode->data.first) {
             delParent = &deleteNode->rightChild;
             deleteNode = deleteNode->rightChild;
-        }
-        // node is found
-        if (deleteNode->leftChild && deleteNode->rightChild) {
-            // Node has 2 children. Use left most child to replace its position.
-            TreeNode<pair<K, E>> *pp, *leftmostNode, *p = deleteNode->leftChild;
-            while (p->rightChild) {
-                pp = p;
-                p = p->rightChild;
-            }
-            leftmostNode = p;
-            // Right most node is the root of left sub binary search tree
-            if (leftmostNode == deleteNode->leftChild) {
-                leftmostNode->rightChild = deleteNode->rightChild;
-            } else {
-                pp->rightChild = leftmostNode->leftChild;
-                leftmostNode->leftChild = deleteNode->leftChild;
-                leftmostNode->rightChild = deleteNode->rightChild;
-            }
-                *delParent = leftmostNode;
         } else {
-            // node has 1 or 0 child.
-                *delParent = deleteNode->leftChild ? deleteNode->leftChild : deleteNode->rightChild;
+            break;
         }
-        // delete node
-        deleteNode->~TreeNode<pair<K, E>>();
+
+    if (deleteNode == nullptr) {
+        std::cout << "Delete node failed. Cannot find the node." << endl;
         return;
     }
-    throw "Cannot delete node. Node not found.";
+    // node is found
+    if (deleteNode->leftChild && deleteNode->rightChild) {
+        // Node has 2 children. Use left most child to replace its position.
+        TreeNode<pair<K, E>> *pp, *leftmostNode, *p = deleteNode->leftChild;
+        while (p->rightChild) {
+            pp = p;
+            p = p->rightChild;
+        }
+        leftmostNode = p;
+        // Right most node is the root of left sub binary search tree
+        if (leftmostNode == deleteNode->leftChild) {
+            leftmostNode->rightChild = deleteNode->rightChild;
+        } else {
+            pp->rightChild = leftmostNode->leftChild;
+            leftmostNode->leftChild = deleteNode->leftChild;
+            leftmostNode->rightChild = deleteNode->rightChild;
+        }
+        *delParent = leftmostNode;
+    } else {
+        // node has 1 or 0 child.
+        *delParent = deleteNode->leftChild ? deleteNode->leftChild : deleteNode->rightChild;
+    }
+    // delete node
+    deleteNode->~TreeNode<pair<K, E>>();
 }
 
 template <class K, class E>
