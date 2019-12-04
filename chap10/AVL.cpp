@@ -1,5 +1,6 @@
 #include <iostream>
 #include "AVL.h"
+#include "../chap3/cpp/Stack/Stack.cpp"
 
 template <class K, class E>
 void AVL<K, E>::Insert(const K& k, const E& e)
@@ -157,21 +158,22 @@ void AVL<K, E>::Delete(const K& k)
         return;
     }
     // Phase 1:
-    AvlNode<K, E> *a = 0,   // most recent node with bf = +-1
-                *pa = 0,    // parent of a
-                *p = root,  // p moves through the tree
-                *pp = 0;    // parent of p
+    Stack<AvlNode<K, E>*> *s = new Stack<AvlNode<K, E>*>();
+    AvlNode<K, E>   *p = root,  // p moves through the tree
+                    **pp = nullptr,    // parent of p
+                    **gp = nullptr;    // grandparent of p
     while (p) {
-        if (p->bf) {
-            a = p;
-            pa = pp;
-        }
         if (k < p->key) {
             // take left branch
-            pp = p;
+            s->Push(p);
+            gp = pp;
+            pp = &p->leftChild;
             p = p->leftChild;
         } else if (k > p->key) {
-            pp = p; p = p->rightChild;
+            s->Push(p);
+            gp = pp;
+            pp = &p->rightChild; 
+            p = p->rightChild;
         } else {
             // find the node
             break;
@@ -181,44 +183,44 @@ void AVL<K, E>::Delete(const K& k)
     // can't find the node
     if (p == nullptr) {
         std::cout << "Delete node failed. Cannot find the node" << endl;
+        s->~Stack();
         return;
     }
-
-    // It's complete binary tree
-    if (!a)
-        a = pp;
 
     // Phase 2: Delete and rebalance. k is in the tree and
     // may be deleted as the appropriate child of pp.
-    AvlNode<K, E> *delNode = p;
+    AvlNode<K, E> *delNode = p,
+                  *pDelNode = pp;
 
     // Deleted node has 2 children. Choose left most child as new root of the subtree.
     if (p->leftChild && p->rightChild) {
+        s->Push(p);
+        gp = pp;
+        pp = &p->leftChild;
         p = p->leftChild;
         while (p) {
-            if (p->bf) {
-                a = p;
-                pa = pp;
-            }
-            pp = p;
+            s->Push(p);
+            gp = pp;
+            pp = &p->rightChild;
             p = p->rightChild;
         }
-        p->key = delNode->key;
-        p->element = delNode->element;
+        // swap delNode and left most child.
+        delNode->key = p->key;
+        delNode->element = p->element;
         delNode = p;
+        pDelNode = pp;
     }
 
-    // Is tree unbalanced?
-    if (!(a->bf) || !(a->bf + d)) {// tree still balanced
-        a->bf += d;
-        p->~K();
-        if (k > pp->key) {
-            pp->rightChild = nullptr;
-        } else {
-            pp->leftChild = nullptr;
-        }
-        return;
+    // Delete node.
+    // There are only 2 circulstances because we have switched the 2-children node with the left most node in 2-children situation.
+    if (p->rightChild) {
+        *pDelNode = delNode->rightChild;
+    } else {
+        *pDelNode = delNode->leftChild;
     }
+    delNode->~AvlNode();
+
+    // TODO: start from here
     // Adjust balance factors of nodes on path from a to pp. By the definition
     // of a, all nodes on this path presently have a balance factor of 0. Their new
     // balance factor will be +-1. d = -1 implies that k is deleted in the left subtree
@@ -226,22 +228,18 @@ void AVL<K, E>::Delete(const K& k)
     int d;
     AvlNode<K, E> *b, // child of a
                   *c; // child of b
-
-    if (k > a->key) {
-        b = p = a->rightChild; d = 1;
-    } else {
-        b = p = a->leftChild; d = -1;
-    }
-
-    while (p != delNode)
-        if (k > p->key) {
-            // height of right decreases by 1
-            p->bf = 1;
-            p = p->rightChild;
-        } else {
-            // height of left decreases by 1
-            p->bf = -1;
-            p = p->leftChild;
-        }
-    
+    // iterate every node until reach root.
+    do {
+        while (p != delNode)
+            if (k > p->key) {
+                // height of right increases by 1
+                p->bf = -1;
+                p = p->rightChild;
+            } else {
+                // height of left increases by 1
+                p->bf = 1;
+                p = p->leftChild;
+            }
+        
+    } while (gp != root);
 }
