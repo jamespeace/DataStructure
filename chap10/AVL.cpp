@@ -148,3 +148,100 @@ void AVL<K, E>::InOrder(AvlNode<K, E> *current)
     std::cout << current->element << ", ";
     InOrder(current->rightChild);
 }
+
+template <class K, class E>
+void AVL<K, E>::Delete(const K& k)
+{
+    if (!root) {    // special case: empty tree
+        std::cout << "Delete node failed. Tree is empty." << endl;
+        return;
+    }
+    // Phase 1:
+    AvlNode<K, E> *a = 0,   // most recent node with bf = +-1
+                *pa = 0,    // parent of a
+                *p = root,  // p moves through the tree
+                *pp = 0;    // parent of p
+    while (p) {
+        if (p->bf) {
+            a = p;
+            pa = pp;
+        }
+        if (k < p->key) {
+            // take left branch
+            pp = p;
+            p = p->leftChild;
+        } else if (k > p->key) {
+            pp = p; p = p->rightChild;
+        } else {
+            // find the node
+            break;
+        }
+    }
+
+    // can't find the node
+    if (p == nullptr) {
+        std::cout << "Delete node failed. Cannot find the node" << endl;
+        return;
+    }
+
+    // It's complete binary tree
+    if (!a)
+        a = pp;
+
+    // Phase 2: Delete and rebalance. k is in the tree and
+    // may be deleted as the appropriate child of pp.
+    AvlNode<K, E> *delNode = p;
+
+    // Deleted node has 2 children. Choose left most child as new root of the subtree.
+    if (p->leftChild && p->rightChild) {
+        p = p->leftChild;
+        while (p) {
+            if (p->bf) {
+                a = p;
+                pa = pp;
+            }
+            pp = p;
+            p = p->rightChild;
+        }
+        p->key = delNode->key;
+        p->element = delNode->element;
+        delNode = p;
+    }
+
+    // Is tree unbalanced?
+    if (!(a->bf) || !(a->bf + d)) {// tree still balanced
+        a->bf += d;
+        p->~K();
+        if (k > pp->key) {
+            pp->rightChild = nullptr;
+        } else {
+            pp->leftChild = nullptr;
+        }
+        return;
+    }
+    // Adjust balance factors of nodes on path from a to pp. By the definition
+    // of a, all nodes on this path presently have a balance factor of 0. Their new
+    // balance factor will be +-1. d = -1 implies that k is deleted in the left subtree
+    // of a. d = +1 implies that k is deleted in the right subtree of a.
+    int d;
+    AvlNode<K, E> *b, // child of a
+                  *c; // child of b
+
+    if (k > a->key) {
+        b = p = a->rightChild; d = 1;
+    } else {
+        b = p = a->leftChild; d = -1;
+    }
+
+    while (p != delNode)
+        if (k > p->key) {
+            // height of right decreases by 1
+            p->bf = 1;
+            p = p->rightChild;
+        } else {
+            // height of left decreases by 1
+            p->bf = -1;
+            p = p->leftChild;
+        }
+    
+}
