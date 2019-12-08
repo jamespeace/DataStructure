@@ -345,7 +345,12 @@ void AVL<K, E>::Delete(const K& k)
                 c->bf = 0; b = c;
             }
         } // end of right imbalance
-        pa = s->Top();
+        try {
+            pa = s->Top();
+        } catch (const char *str) {
+            pa = nullptr;
+        }
+        
         // Subtree with root b has been rebalanced.
         if (!pa)
             root = b;
@@ -354,4 +359,5 @@ void AVL<K, E>::Delete(const K& k)
         else
             pa->rightChild = b;
     }
+    delete s;
 }
