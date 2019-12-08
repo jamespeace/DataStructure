@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "AVL.h"
 #include "../chap3/cpp/Stack/Stack.cpp"
 
@@ -32,8 +33,10 @@ void AVL<K, E>::Insert(const K& k, const E& e)
         }
     }
     // It's complete binary tree
-    if (!a)
+    if (!a) {
         a = root;
+        a->height += 1;
+    }
     // Phase 2: Insert and rebalance. k is not in the tree and
     // may be inserted as the appropriate child of pp.
     AvlNode<K, E> *y = new AvlNode<K, E>(k, e);
@@ -60,10 +63,12 @@ void AVL<K, E>::Insert(const K& k, const E& e)
         if (k > p->key) {
             // height of right increases by 1
             p->bf = -1;
+            p->height += 1;
             p = p->rightChild;
         } else {
             // height of left increases by 1
             p->bf = 1;
+            p->height += 1;
             p = p->leftChild;
         }
     
@@ -78,6 +83,7 @@ void AVL<K, E>::Insert(const K& k, const E& e)
             a->leftChild = b->rightChild;
             b->rightChild = a;
             a->bf = 0;
+            a->height -= 2;
             b->bf = 0;
         } else {            // rotation type LR
             c = b->rightChild;
@@ -95,6 +101,9 @@ void AVL<K, E>::Insert(const K& k, const E& e)
                     a->bf = 0; b->bf = 1;
                     break;
             }
+            a->height -= 3;
+            b->height -= 1;
+            c->height += 1;
             c->bf = 0; b = c; // c is the new root
         }
     } // end of left imbalance
@@ -103,6 +112,7 @@ void AVL<K, E>::Insert(const K& k, const E& e)
             a->rightChild = b->leftChild;
             b->leftChild = a;
             a->bf = 0;
+            a->height -= 2;
             b->bf = 0;
         } else {            // rotation type RL
             c = b->leftChild;
@@ -119,6 +129,9 @@ void AVL<K, E>::Insert(const K& k, const E& e)
                 case -1:
                     a->bf = 1; b->bf = 0;
             }
+            a->height -= 3;
+            b->height -= 1;
+            c->height += 1;
             c->bf = 0; b = c;
         }
     } // end of right imbalance
@@ -134,20 +147,31 @@ void AVL<K, E>::Insert(const K& k, const E& e)
 }
 
 template <class K, class E>
-void AVL<K, E>::InOrder()
+void AVL<K, E>::InOrder(int i)
 {
-    InOrder(root);
+    if (i == 1)
+        std::cout << "element: ";
+    else if (i == 2)
+        std::cout << "bf:      ";
+    else if (i == 3)
+        std::cout << "height:  ";
+    InOrder(root, i);
     std::cout << "NULL" << std::endl;
 }
 
 template <class K, class E>
-void AVL<K, E>::InOrder(AvlNode<K, E> *current)
+void AVL<K, E>::InOrder(AvlNode<K, E> *current, int i)
 {
     if (!current)
         return;
-    InOrder(current->leftChild);
-    std::cout << current->element << ", ";
-    InOrder(current->rightChild);
+    InOrder(current->leftChild, i);
+    if (i == 1)
+        std::cout << std::setw(2) << current->element << ", ";
+    else if (i == 2)
+        std::cout << std::setw(2) << current->bf << ", ";
+    else if (i == 3)
+        std::cout << std::setw(2) << current->height << ", ";
+    InOrder(current->rightChild, i);
 }
 
 template <class K, class E>
@@ -190,7 +214,7 @@ void AVL<K, E>::Delete(const K& k)
     // Phase 2: Delete and rebalance. k is in the tree and
     // may be deleted as the appropriate child of pp.
     AvlNode<K, E> *delNode = p,
-                  *pDelNode = pp;
+                  **pDelNode = pp;
 
     // Deleted node has 2 children. Choose left most child as new root of the subtree.
     if (p->leftChild && p->rightChild) {
@@ -198,7 +222,7 @@ void AVL<K, E>::Delete(const K& k)
         gp = pp;
         pp = &p->leftChild;
         p = p->leftChild;
-        while (p) {
+        while (p->rightChild) {
             s->Push(p);
             gp = pp;
             pp = &p->rightChild;
@@ -211,11 +235,19 @@ void AVL<K, E>::Delete(const K& k)
         pDelNode = pp;
     }
 
+    int d;
     // Delete node.
+    // delNode is root;
+    if (!pDelNode) {
+        root = nullptr;
+        delNode->~AvlNode();
+    }
     // There are only 2 circulstances because we have switched the 2-children node with the left most node in 2-children situation.
-    if (p->rightChild) {
+    else if (delNode->rightChild) {
+        p = delNode->rightChild;
         *pDelNode = delNode->rightChild;
     } else {
+        p = delNode->leftChild;
         *pDelNode = delNode->leftChild;
     }
     delNode->~AvlNode();
@@ -225,21 +257,101 @@ void AVL<K, E>::Delete(const K& k)
     // of a, all nodes on this path presently have a balance factor of 0. Their new
     // balance factor will be +-1. d = -1 implies that k is deleted in the left subtree
     // of a. d = +1 implies that k is deleted in the right subtree of a.
-    int d;
-    AvlNode<K, E> *b, // child of a
-                  *c; // child of b
+    AvlNode<K, E> *a,
+                  *b, // child of a
+                  *c, // child of b
+                  *pa;
+    a = p;
+
     // iterate every node until reach root.
-    do {
-        while (p != delNode)
-            if (k > p->key) {
-                // height of right increases by 1
-                p->bf = -1;
-                p = p->rightChild;
+    while (!s->IsEmpty()) {
+        a = s->Top();
+        s->Pop();
+        int leftHeight = 0, rightHeight = 0;
+        if (a->rightChild)
+            rightHeight = a->rightChild->height;
+        if (a->leftChild)
+            leftHeight = a->leftChild->height;
+        if (abs(rightHeight - leftHeight) <= 1) {
+            // node is still balanced.
+            a->bf = leftHeight - rightHeight;
+            a->height = max(leftHeight, rightHeight) + 1;
+            continue;
+        } else {
+            if (leftHeight > rightHeight) {
+                d = 1;
+                b = a->leftChild;
             } else {
-                // height of left increases by 1
-                p->bf = 1;
-                p = p->leftChild;
+                d = -1;
+                b = a->rightChild;
             }
-        
-    } while (gp != root);
+        }
+
+        // tree unbalanced, determine rotation type
+        if (d == 1) {
+            if (b->bf == 1) {   // rotation type LL
+                a->leftChild = b->rightChild;
+                b->rightChild = a;
+                a->bf = 0;
+                a->height -= 2;
+                b->bf = 0;
+            } else {            // rotation type LR
+                c = b->rightChild;
+                // counterclockwise rotation in b
+                b->rightChild = c->leftChild;
+                c->leftChild = b;
+                // clockwise rotation in a
+                a->leftChild = c->rightChild;
+                c->rightChild = a;
+                switch (c->bf) {
+                    case 1:
+                        a->bf = -1; b->bf = 0;
+                        break;
+                    case -1:
+                        a->bf = 0; b->bf = 1;
+                        break;
+                }
+                a->height -= 3;
+                b->height -= 1;
+                c->height += 1;
+                c->bf = 0; b = c; // c is the new root
+            }
+        } // end of left imbalance
+        else { // right imbalance: this is symmetric to left imbalance
+            if (b->bf == -1) {  // rotation type RR
+                a->rightChild = b->leftChild;
+                b->leftChild = a;
+                a->bf = 0;
+                a->height -= 2;
+                b->bf = 0;
+            } else {            // rotation type RL
+                c = b->leftChild;
+                // clockwise rotation in b
+                b->leftChild = c->rightChild;
+                c->rightChild = b;
+                // counterclockwise rotation in a
+                a->rightChild = c->leftChild;
+                c->leftChild = a;
+                switch (c->bf) {
+                    case 1:
+                        a->bf = 0; b->bf = -1;
+                        break;
+                    case -1:
+                        a->bf = 1; b->bf = 0;
+                }
+                a->height -= 3;
+                b->height -= 1;
+                c->height += 1;
+                c->bf = 0; b = c;
+            }
+        } // end of right imbalance
+        pa = s->Top();
+        // Subtree with root b has been rebalanced.
+        if (!pa)
+            root = b;
+        else if (a == pa->leftChild)
+            pa->leftChild = b;
+        else
+            pa->rightChild = b;
+    }
 }
