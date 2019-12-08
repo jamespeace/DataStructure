@@ -252,7 +252,8 @@ void AVL<K, E>::Delete(const K& k)
     }
     delNode->~AvlNode();
 
-    // TODO: start from here
+    // TODO: All nodes need to be traversal. There is big here.
+    // This function is not complete.
     // Adjust balance factors of nodes on path from a to pp. By the definition
     // of a, all nodes on this path presently have a balance factor of 0. Their new
     // balance factor will be +-1. d = -1 implies that k is deleted in the left subtree
